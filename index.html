@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW(精)天氣預報卡練習</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #B5CAA0, #91B493);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding-top: 10px;
+        }
+
+        .card {
+            width: 300px;
+            height: 450px;
+            background-color: #7AA4A6;
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+
+        .city {
+            width: 300px;
+            height: 80px;
+            border-bottom: #8BB9BC 10px solid;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .show {
+            width: 300px;
+            height: 200px;
+            border-bottom: #ffffffab 10px solid;
+        }
+
+        .img {
+            width: 100%;
+        }
+
+        .bot {
+            display: flex;
+        }
+
+        .right {
+            width: 150px;
+            height: 85px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .celsius {
+            width: 150px;
+            height: 170px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+
+    <script>
+        var container = document.querySelector('#container')
+        fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-B5282D9D-8FDD-40E9-AD48-B1DF3270465D')
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (weather) {
+                console.log(weather.records.location[11].locationName);
+                let location = weather.records.location
+                for (let index = 0; index < location.length; index++) {
+                    var place =location[index].locationName
+                    var report = location[index].weatherElement[0].time[0].parameter.parameterName
+                    var hightTemp = location[index].weatherElement[2].time[0].parameter.parameterName
+                    var lowTemp = location[index].weatherElement[4].time[0].parameter.parameterName
+                    var feels = location[index].weatherElement[3].time[0].parameter.parameterName
+                    
+                    if (location[index].weatherElement[1].time[0].parameter.parameterName <= 30) {
+                        var  weatherImg = 'sun.jpg'
+                        var  cardColor = '#7AA4A6'
+                    }else if (location[index].weatherElement[1].time[0].parameter.parameterName <= 60){
+                        var  weatherImg = 'cloudy.jpg'
+                        var  cardColor = '#4E6A79'                        
+                    }else{
+                        var  weatherImg = 'rain.jpg'
+                        var  cardColor = '#2C4357'
+                        
+                    }
+
+                    container.innerHTML +=
+                        `
+
+                    <div class="card" style="background-color: ${cardColor}">
+                        <div class="city">
+                            <p>${place}</p>
+                        </div>
+                        <div class="show" style="background-image: url('./img/${weatherImg}')")></div>
+                        <div class="bot">
+                            <div class="bot-right">
+                                <div class="right weather">
+                                    <p>天氣狀況<br>${report}</p>
+                                </div>
+                                <div class="right feel">
+                                    <p>體感：${feels}</p>
+                                </div>
+                            </div>
+                            <div class="celsius">
+                                <p>溫度<br>${hightTemp}<br>|<br>${lowTemp}</p>
+                            </div>
+                        </div>
+                    </div>    
+                    `
+                    
+                    // if (location[index].weatherElement[1].time[0].parameter.parameterName <= 30) {
+                    //     card.style['background-color'] = '#7AA4A6'
+                    // }else if (location[index].weatherElement[1].time[0].parameter.parameterName <= 60){
+                    //     card.style['background-color'] = '#4E6A79'                        
+                    // }else{
+                    //     card.style['background-color'] = '#2C4357'
+                        
+                    // }
+                }
+                
+                
+
+
+
+            })
+    </script>
+
+</body>
+
+</html>
